@@ -7,21 +7,28 @@
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     
     <script>
-      // Este script espera a que todo cargue
       document.addEventListener("DOMContentLoaded", function() {
         const sceneEl = document.querySelector('a-scene');
         const videoEl = document.querySelector('#vid');
 
-        // Cuando el sistema detecta la imagen (targetFound), intenta reproducir
-        sceneEl.addEventListener("arReady", (event) => {
-          console.log("AR System Ready");
+        // EVENTO CLAVE: Se dispara cuando la cámara reconoce la playera
+        sceneEl.addEventListener("targetFound", (event) => {
+          console.log("¡Playera detectada!");
+          // Reproducir video INMEDIATAMENTE (sin sonido para evitar bloqueo)
+          videoEl.muted = true; 
+          videoEl.play();
         });
 
-        // TRUCO: Agregamos un "botón invisible" en toda la pantalla
-        // Al tocar cualquier parte, el video se reproduce y se activa el sonido
+        // EVENTO PERDIDO: Si deja de apuntar a la playera
+        sceneEl.addEventListener("targetLost", (event) => {
+          console.log("Playera perdida");
+          videoEl.pause();
+        });
+
+        // INTERACCIÓN HUMANA: Solo esto puede activar el audio legalmente
         document.body.addEventListener('click', () => {
-          videoEl.play();
-          videoEl.muted = false; // Activa el sonido al tocar
+          videoEl.muted = false; // ¡Ahora sí activamos sonido!
+          console.log("Audio activado por usuario");
         });
       });
     </script>
@@ -31,7 +38,7 @@
     <a-scene mindar-image="imageTargetSrc: ./targets.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       
       <a-assets>
-        <video id="vid" src="./2b398baadc94eb356596b1f61a8014ab.mp4" loop="true" playsinline webkit-playsinline muted crossorigin="anonymous"></video>
+        <video id="vid" src="./video.mp4" loop="true" playsinline webkit-playsinline muted crossorigin="anonymous"></video>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
