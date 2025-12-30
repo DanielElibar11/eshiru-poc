@@ -11,30 +11,35 @@
         const sceneEl = document.querySelector('a-scene');
         const videoEl = document.querySelector('#vid');
 
+        // DETECCIÓN: Al encontrar la imagen
         sceneEl.addEventListener("targetFound", (event) => {
-          console.log("Playera detectada");
-          videoEl.play();
-          videoEl.muted = false; // Intento agresivo de activar audio
+          console.log("Found");
+          videoEl.play(); 
+          // Intentamos activar audio de una vez (funciona si el usuario ya tocó la pantalla antes)
+          videoEl.muted = false; 
         });
 
+        // PÉRDIDA: Al perder la imagen
         sceneEl.addEventListener("targetLost", (event) => {
-          console.log("Playera perdida");
+          console.log("Lost");
           videoEl.pause();
+          // Opcional: reiniciar el video al perderlo para que siempre empiece desde el principio
+          // videoEl.currentTime = 0; 
         });
 
-        // Este click es el plan B por si el audio no arranca solo
+        // INTERACCIÓN: Click para desbloquear audio
         document.body.addEventListener('click', () => {
           videoEl.play();
-          videoEl.muted = false; 
+          videoEl.muted = false;
         });
       });
     </script>
   </head>
   
   <body style="margin: 0; overflow: hidden;">
-    <a-scene mindar-image="imageTargetSrc: ./targets.mind; filterMinCF:0.0001; filterBeta: 0.001;" 
+    <a-scene mindar-image="imageTargetSrc: ./targets.mind; filterMinCF:0.001; filterBeta: 10;" 
              color-space="sRGB" 
-             renderer="colorManagement: true, physicallyCorrectLights, precision: medium" 
+             renderer="colorManagement: true, physicallyCorrectLights, antialias: false, precision: high" 
              vr-mode-ui="enabled: false" 
              device-orientation-permission-ui="enabled: false">
       
@@ -45,7 +50,7 @@
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-plane src="#vid" position="0 0 0" height="1.77" width="1" rotation="0 0 0"></a-plane>
+        <a-plane src="#vid" position="0 0 0" height="1.77" width="1" rotation="0 0 0" opacity="1"></a-plane>
       </a-entity>
       
     </a-scene>
