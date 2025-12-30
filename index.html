@@ -5,8 +5,29 @@
     <title>Eshiru AR</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    
+    <script>
+      // Este script espera a que todo cargue
+      document.addEventListener("DOMContentLoaded", function() {
+        const sceneEl = document.querySelector('a-scene');
+        const videoEl = document.querySelector('#vid');
+
+        // Cuando el sistema detecta la imagen (targetFound), intenta reproducir
+        sceneEl.addEventListener("arReady", (event) => {
+          console.log("AR System Ready");
+        });
+
+        // TRUCO: Agregamos un "botón invisible" en toda la pantalla
+        // Al tocar cualquier parte, el video se reproduce y se activa el sonido
+        document.body.addEventListener('click', () => {
+          videoEl.play();
+          videoEl.muted = false; // Activa el sonido al tocar
+        });
+      });
+    </script>
   </head>
-  <body>
+  
+  <body style="margin: 0; overflow: hidden;">
     <a-scene mindar-image="imageTargetSrc: ./targets.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       
       <a-assets>
